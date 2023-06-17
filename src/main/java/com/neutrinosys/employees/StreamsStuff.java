@@ -1,6 +1,10 @@
 package com.neutrinosys.employees;
 
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import static java.util.Comparator.comparing;
+import static java.util.function.Predicate.not;
 
 public class StreamsStuff {
     public static void main(String[] args) {
@@ -30,9 +34,12 @@ public class StreamsStuff {
        int sum = peopleText
                 .lines()
                 .map(Employee::createEmployee)
+               .filter(employee -> employee.getSalary() > 5000)
+               .filter(employee -> employee.getSalary() < 10000)
+               .collect(Collectors.toSet()).stream()
                 .sorted(comparing(Employee::getLastName)
                         .thenComparing(Employee::getFirstName)
-                        .thenComparingInt(Employee::getSalary).reversed())
+                        .thenComparingInt(Employee::getSalary))
 
                 .mapToInt(StreamsStuff::showEmpAndGetSalary)
                 .sum();
