@@ -1,5 +1,6 @@
 package com.neutrinosys.employees;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -31,20 +32,35 @@ public class StreamsStuff {
             Rubble, Betty, 4/4/1915, CEO, {avgStockPrice=300}
             """;
 
-       int sum = peopleText
+        peopleText
                 .lines()
                 .map(Employee::createEmployee)
-               .filter(employee -> employee.getSalary() > 5000)
-               .filter(employee -> employee.getSalary() < 10000)
-               .collect(Collectors.toSet()).stream()
-                .sorted(comparing(Employee::getLastName)
-                        .thenComparing(Employee::getFirstName)
-                        .thenComparingInt(Employee::getSalary))
+                .map(Employee::getFirstName)
+                .map(firstName -> firstName.split(""))
+                .flatMap(Arrays::stream)
+                .map(String::toLowerCase)
+                .distinct()
+                .forEach(System.out::print);
 
-                .mapToInt(StreamsStuff::showEmpAndGetSalary)
-                .sum();
 
-        System.out.println(sum);
+//        Predicate<Employee> dummyEmpSelector = employee -> !"N/A".equals(employee.getLastName());
+//        Predicate<Employee> overFiveKSelector = employee -> employee.getSalary() > 5000;
+//        Predicate<Employee> noDummiesAndOverFiveK = dummyEmpSelector.and(overFiveKSelector);
+//        int sum = peopleText
+//                .lines()
+//                .map(Employee::createEmployee)
+//                .filter(noDummiesAndOverFiveK)
+//
+////               .filter(employee -> employee.getSalary() < 10000)
+//               .collect(Collectors.toSet()).stream()
+//                .sorted(comparing(Employee::getLastName)
+//                        .thenComparing(Employee::getFirstName)
+//                        .thenComparingInt(Employee::getSalary))
+//
+//                .mapToInt(StreamsStuff::showEmpAndGetSalary)
+//                .sum();
+//
+//        System.out.println(sum);
 
     }
 
