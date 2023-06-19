@@ -1,6 +1,7 @@
 package com.neutrinosys.employees;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -31,36 +32,42 @@ public class StreamsStuff {
             Flinstone, Wilma5, 3/3/1910, Analyst, {projectCount=9}
             Rubble, Betty, 4/4/1915, CEO, {avgStockPrice=300}
             """;
-
-        peopleText
-                .lines()
-                .map(Employee::createEmployee)
-                .map(Employee::getFirstName)
-                .map(firstName -> firstName.split(""))
-                .flatMap(Arrays::stream)
-                .map(String::toLowerCase)
-                .distinct()
-                .forEach(System.out::print);
-
-
 //        Predicate<Employee> dummyEmpSelector = employee -> !"N/A".equals(employee.getLastName());
-//        Predicate<Employee> overFiveKSelector = employee -> employee.getSalary() > 5000;
-//        Predicate<Employee> noDummiesAndOverFiveK = dummyEmpSelector.and(overFiveKSelector);
-//        int sum = peopleText
+//        Optional<Employee> optionalEmployee = peopleText
 //                .lines()
 //                .map(Employee::createEmployee)
-//                .filter(noDummiesAndOverFiveK)
-//
-////               .filter(employee -> employee.getSalary() < 10000)
-//               .collect(Collectors.toSet()).stream()
-//                .sorted(comparing(Employee::getLastName)
-//                        .thenComparing(Employee::getFirstName)
-//                        .thenComparingInt(Employee::getSalary))
-//
-//                .mapToInt(StreamsStuff::showEmpAndGetSalary)
-//                .sum();
-//
-//        System.out.println(sum);
+//                .filter(employee -> employee.getSalary() < 0)
+//                .findAny();
+//        System.out.println(optionalEmployee
+//                .map(Employee::getFirstName)
+//                .orElse("Nobody"));
+
+//                .map(Employee::getFirstName)
+//                .map(firstName -> firstName.split(""))
+//                .flatMap(Arrays::stream)
+//                .map(String::toLowerCase)
+//                .distinct()
+//                .forEach(System.out::print);
+
+
+        Predicate<Employee> dummyEmpSelector = employee -> !"N/A".equals(employee.getLastName());
+        Predicate<Employee> overFiveKSelector = employee -> employee.getSalary() > 5000;
+        Predicate<Employee> noDummiesAndOverFiveK = dummyEmpSelector.and(overFiveKSelector);
+        int sum = peopleText
+                .lines()
+                .map(Employee::createEmployee)
+                .filter(noDummiesAndOverFiveK)
+
+//               .filter(employee -> employee.getSalary() < 10000)
+               .collect(Collectors.toSet()).stream()
+                .sorted(comparing(Employee::getLastName)
+                        .thenComparing(Employee::getFirstName)
+                        .thenComparingInt(Employee::getSalary))
+
+                .mapToInt(StreamsStuff::showEmpAndGetSalary)
+                .sum();
+
+        System.out.println(sum);
 
     }
 
