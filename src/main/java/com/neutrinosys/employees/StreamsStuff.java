@@ -2,6 +2,8 @@ package com.neutrinosys.employees;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -53,7 +55,7 @@ public class StreamsStuff {
         Predicate<Employee> dummyEmpSelector = employee -> !"N/A".equals(employee.getLastName());
         Predicate<Employee> overFiveKSelector = employee -> employee.getSalary() > 5000;
         Predicate<Employee> noDummiesAndOverFiveK = dummyEmpSelector.and(overFiveKSelector);
-        int sum = peopleText
+        long result = peopleText
                 .lines()
                 .map(Employee::createEmployee)
                 .filter(noDummiesAndOverFiveK)
@@ -63,11 +65,11 @@ public class StreamsStuff {
                 .sorted(comparing(Employee::getLastName)
                         .thenComparing(Employee::getFirstName)
                         .thenComparingInt(Employee::getSalary))
-
+                .skip(5)
                 .mapToInt(StreamsStuff::showEmpAndGetSalary)
-                .sum();
+                .reduce(0, (a, b) -> a + b);
 
-        System.out.println(sum);
+        System.out.println(result);
 
     }
 
