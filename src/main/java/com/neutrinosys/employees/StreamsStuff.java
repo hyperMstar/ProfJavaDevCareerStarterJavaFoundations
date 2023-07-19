@@ -1,14 +1,12 @@
 package com.neutrinosys.employees;
 
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
-import static java.util.function.Predicate.not;
 
 public class StreamsStuff {
     public static void main(String[] args) {
@@ -55,7 +53,7 @@ public class StreamsStuff {
         Predicate<Employee> dummyEmpSelector = employee -> !"N/A".equals(employee.getLastName());
         Predicate<Employee> overFiveKSelector = employee -> employee.getSalary() > 5000;
         Predicate<Employee> noDummiesAndOverFiveK = dummyEmpSelector.and(overFiveKSelector);
-        long result = peopleText
+        OptionalInt result = peopleText
                 .lines()
                 .map(Employee::createEmployee)
                 .filter(noDummiesAndOverFiveK)
@@ -67,9 +65,15 @@ public class StreamsStuff {
                         .thenComparingInt(Employee::getSalary))
                 .skip(5)
                 .mapToInt(StreamsStuff::showEmpAndGetSalary)
-                .reduce(0, (a, b) -> a + b);
+                .reduce((a, b) -> a < b ? a : b);
 
-        System.out.println(result);
+        System.out.println(result.orElse(-1));
+
+
+        Optional<String> output =Stream.of("tom", "brady")
+                .reduce((a,b) -> a.concat("_").concat(b));
+        System.out.println(output.orElse("").toUpperCase());
+
 
     }
 
